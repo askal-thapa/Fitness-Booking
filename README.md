@@ -15,7 +15,7 @@ Make sure the development server is running (`npm run dev`), then click or paste
 ### Fitness User Flows
 - **Main Dashboard:** [http://localhost:3000/dashboard](http://localhost:3000/dashboard)
 - **Browse Trainers:** [http://localhost:3000/dashboard/trainers](http://localhost:3000/dashboard/trainers)
-- **Trainer Profile Details:** [http://localhost:3000/dashboard/trainers/1](http://localhost:3000/dashboard/trainers/1) *(Simulated IDs: 1 to 6)*
+- **Trainer Profile Details:** [http://localhost:3000/dashboard/trainers/1](http://localhost:3000/dashboard/trainers/1)
 - **Book a Session:** [http://localhost:3000/dashboard/trainers/1/book](http://localhost:3000/dashboard/trainers/1/book)
 - **Manage Bookings:** [http://localhost:3000/dashboard/bookings](http://localhost:3000/dashboard/bookings)
 - **User Profile Settings:** [http://localhost:3000/dashboard/profile](http://localhost:3000/dashboard/profile)
