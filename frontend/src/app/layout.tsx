@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import FloatingAssistant from "@/components/FloatingAssistant";
+import InstallPWA from "@/components/InstallPWA";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -65,6 +66,7 @@ export default function RootLayout({
         <Providers>
             {children}
             <FloatingAssistant />
+            <InstallPWA />
             <Toaster position="bottom-right" theme="dark" richColors closeButton />
         </Providers>
       </body>
