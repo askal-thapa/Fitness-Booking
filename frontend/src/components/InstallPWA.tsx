@@ -30,7 +30,11 @@ export default function InstallPWA() {
     const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowBanner(true);
+      
+      // Only show banner automatically if on mobile/tablet
+      if (mobile) {
+        setShowBanner(true);
+      }
     };
 
     window.addEventListener("beforeinstallprompt", handler);
