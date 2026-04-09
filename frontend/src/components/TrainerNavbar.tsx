@@ -5,11 +5,13 @@ import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { trainerApi } from '@/lib/api';
 import React, { useEffect, useState } from 'react';
+import { Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
 
 export default function TrainerNavbar() {
   const pathname = usePathname() || '';
   const { data: session } = useSession();
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const user = session?.user as any;
   const fullName = user?.name || "Trainer";
@@ -25,6 +27,8 @@ export default function TrainerNavbar() {
     }
   }, [user?.accessToken]);
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   return (
     <nav className="w-full bg-charcoal-light border-b border-white/5 sticky top-0 z-40 shadow-xl backdrop-blur-md bg-charcoal-light/80">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -33,6 +37,8 @@ export default function TrainerNavbar() {
             <span className="w-8 h-8 bg-muted-blue rounded-lg flex items-center justify-center text-white font-bold text-sm rotate-3 group-hover:rotate-0 transition-transform">A</span>
             ASKAL
           </Link>
+          
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <Link 
               href="/trainer/dashboard" 
@@ -46,12 +52,15 @@ export default function TrainerNavbar() {
             </Link>
           </div>
         </div>
-        <div className="flex items-center gap-6">
+
+        {/* Desktop Profile Actions */}
+        <div className="hidden md:flex items-center gap-6">
           <button 
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="text-xs font-bold uppercase tracking-widest text-off-white/40 hover:text-red-400 transition-colors"
+            className="text-xs font-bold uppercase tracking-widest text-off-white/40 hover:text-red-400 transition-colors flex items-center gap-2"
           >
-            Logout
+            <span>Logout</span>
+            <LogOut className="w-4 h-4" />
           </button>
           
           <Link href="/trainer/dashboard" className="flex items-center gap-3 group">
@@ -64,7 +73,43 @@ export default function TrainerNavbar() {
             </div>
           </Link>
         </div>
+
+        {/* Mobile Toggle Button */}
+        <div className="md:hidden flex items-center">
+          <button 
+            onClick={toggleMenu}
+            className="text-white p-2 hover:bg-white/5 rounded-lg transition-colors"
+          >
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-charcoal-light border-b border-white/5 animate-in slide-in-from-top duration-300">
+          <div className="flex flex-col p-6 gap-2">
+            <Link 
+              href="/trainer/dashboard" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`flex items-center gap-3 p-3 rounded-xl transition-all ${pathname === '/trainer/dashboard' ? 'bg-muted-blue/10 text-white' : 'text-off-white/60'}`}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span className="font-semibold">Overview</span>
+            </Link>
+            
+            <div className="h-px bg-white/5 my-2" />
+            
+            <button 
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="flex items-center gap-3 p-3 text-red-500 font-semibold"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

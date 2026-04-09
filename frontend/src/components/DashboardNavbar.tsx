@@ -5,11 +5,13 @@ import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { onboardingApi } from '@/lib/api';
+import { Menu, X, LogOut, LayoutDashboard, Users, Calendar, User } from 'lucide-react';
 
 export default function DashboardNavbar() {
   const pathname = usePathname() || '';
   const { data: session } = useSession();
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const user = session?.user as any;
   const fullName = user?.name || "User";
@@ -25,6 +27,8 @@ export default function DashboardNavbar() {
     }
   }, [user?.accessToken]);
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   return (
     <nav className="w-full bg-charcoal-light border-b border-white/5 sticky top-0 z-40 shadow-xl backdrop-blur-md bg-charcoal-light/80">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -33,6 +37,8 @@ export default function DashboardNavbar() {
             <span className="w-8 h-8 bg-muted-blue rounded-lg flex items-center justify-center text-white font-bold text-sm rotate-3 group-hover:rotate-0 transition-transform">A</span>
             ASKAL
           </Link>
+          
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <Link 
               href="/dashboard" 
@@ -66,13 +72,15 @@ export default function DashboardNavbar() {
             </Link>
           </div>
         </div>
-        <div className="flex items-center gap-6">
+
+        {/* Desktop Profile Actions */}
+        <div className="hidden md:flex items-center gap-6">
           <button 
             onClick={() => signOut({ callbackUrl: "/" })}
             className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-off-white/40 hover:text-red-400 transition-all group/logout"
           >
             <span>Logout</span>
-            <svg className="w-4 h-4 group-hover/logout:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            <LogOut className="w-4 h-4 group-hover/logout:translate-x-0.5 transition-transform" />
           </button>
           
           <Link href="/dashboard/profile" className="flex items-center gap-3 group">
@@ -85,7 +93,67 @@ export default function DashboardNavbar() {
             </div>
           </Link>
         </div>
+
+        {/* Mobile Toggle Button */}
+        <div className="md:hidden flex items-center">
+          <button 
+            onClick={toggleMenu}
+            className="text-white p-2 hover:bg-white/5 rounded-lg transition-colors"
+          >
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-charcoal-light border-b border-white/5 animate-in slide-in-from-top duration-300">
+          <div className="flex flex-col p-6 gap-2">
+            <Link 
+              href="/dashboard" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`flex items-center gap-3 p-3 rounded-xl transition-all ${pathname === '/dashboard' ? 'bg-muted-blue/10 text-white' : 'text-off-white/60'}`}
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              <span className="font-semibold">Dashboard</span>
+            </Link>
+            <Link 
+              href="/trainers" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`flex items-center gap-3 p-3 rounded-xl transition-all ${pathname.startsWith('/trainers') ? 'bg-muted-blue/10 text-white' : 'text-off-white/60'}`}
+            >
+              <Users className="w-5 h-5" />
+              <span className="font-semibold">Trainers</span>
+            </Link>
+            <Link 
+              href="/dashboard/bookings" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`flex items-center gap-3 p-3 rounded-xl transition-all ${pathname.startsWith('/dashboard/bookings') ? 'bg-muted-blue/10 text-white' : 'text-off-white/60'}`}
+            >
+              <Calendar className="w-5 h-5" />
+              <span className="font-semibold">Bookings</span>
+            </Link>
+            <Link 
+              href="/dashboard/profile" 
+              onClick={() => setIsMenuOpen(false)}
+              className={`flex items-center gap-3 p-3 rounded-xl transition-all ${pathname === '/dashboard/profile' ? 'bg-muted-blue/10 text-white' : 'text-off-white/60'}`}
+            >
+              <User className="w-5 h-5" />
+              <span className="font-semibold">My Profile</span>
+            </Link>
+            
+            <div className="h-px bg-white/5 my-2" />
+            
+            <button 
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="flex items-center gap-3 p-3 text-red-500 font-semibold"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
