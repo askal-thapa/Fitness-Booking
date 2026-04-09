@@ -1,51 +1,118 @@
-# Askal Fitness Booking Plattform
+# Askal Fitness Booking Platform
 
-A full-stack fitness booking platform featuring a Next.js (React) frontend and a NestJS (Node.js) backend, utilizing Drizzle ORM to manage PostgreSQL, and integrating various services like Stripe and Cloudinary.
+A full-stack fitness booking platform featuring a Next.js (React) frontend and a NestJS (Node.js) backend, utilizing Drizzle ORM to manage PostgreSQL, and integrating services like Stripe and Cloudinary.
 
 ## Prerequisites
 - Node.js (v18+)
-- PostgreSQL (Ensure it is running locally according to your `.env`)
-
-## Getting Started
-
-1. **Install all dependencies**
-   Run the following command in the root directory. This will automatically install dependencies for the root, frontend, and backend folders.
-   ```bash
-   npm install
-   ```
-
-2. **Database Setup**
-   Configure the database locally, generating types, running migrations, and seeding data all at once:
-   ```bash
-   npm run db:setup
-   ```
-
-3. **Development Mode**
-   Start both the frontend and backend servers simultaneously with hot-reloading:
-   ```bash
-   npm run dev
-   ```
-   - Frontend will be available at: `http://localhost:3000`
-   - Backend API will be available at: `http://localhost:3001`
+- PostgreSQL (running locally)
 
 ---
 
-## Available Root Commands
+## Setup
 
-### Running the App
-- `npm run dev`: Runs both backend (NestJS watch mode) and frontend (Next.js dev server).
-- `npm run build`: Compiles production builds for both backend and frontend.
-- `npm run start`: Runs both built production servers.
+Each service has its own `.env` and is run independently from its own directory.
 
-### Database Operations (Drizzle)
-- `npm run db:setup`: Generates schemas, runs migrations, and seeds the db.
-- `npm run db:generate`: Generates fresh Drizzle migrations based on your schema.
-- `npm run db:migrate`: Applies migrations to your Postgres database.
-- `npm run db:seed`: Seeds Postgres with base data from `backend/src/db/seed.ts`.
+### 1. Backend (`/backend`)
+
+```bash
+cd backend
+```
+
+**Copy and fill in your env:**
+```bash
+cp .env.example .env   # or create .env manually — see below
+```
+
+**Backend `.env` variables:**
+```env
+DATABASE_URL=postgres://localhost:5432/askal_trainer
+PORT=3001
+JWT_SECRET=your-secret-here
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+FRONTEND_URL=http://localhost:3000
+```
+
+**Install dependencies:**
+```bash
+npm install
+```
+
+**Database setup (run in order):**
+```bash
+npm run db:generate   # Generate Drizzle migrations from schema
+npm run db:migrate    # Apply migrations to PostgreSQL
+npm run db:seed       # Seed the database with base data
+```
+
+**Start (development):**
+```bash
+npm run start:dev     # NestJS in watch mode
+```
+
+**Build & run (production):**
+```bash
+npm run build
+npm run start:prod
+```
+
+---
+
+### 2. Frontend (`/frontend`)
+
+```bash
+cd frontend
+```
+
+**Copy and fill in your env:**
+```bash
+cp .env.example .env   # or create .env manually — see below
+```
+
+**Frontend `.env` variables:**
+```env
+NEXTAUTH_SECRET=your-nextauth-secret
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+**Install dependencies:**
+```bash
+npm install
+```
+
+**Start (development):**
+```bash
+npm run dev           # Next.js dev server with hot reload
+```
+
+**Build & run (production):**
+```bash
+npm run build
+npm run start
+```
+
+---
+
+## URLs
+
+| Service  | URL                      |
+|----------|--------------------------|
+| Frontend | http://localhost:3000    |
+| Backend  | http://localhost:3001    |
 
 ---
 
 ## Directory Structure
-- `/frontend` - Next.js codebase
-- `/backend` - NestJS codebase
-- `/.env` - Unified environment parameters loaded dynamically by both ends.
+
+```
+/
+├── backend/      # NestJS API
+│   └── .env      # Backend environment variables
+├── frontend/     # Next.js app
+│   └── .env      # Frontend environment variables
+└── README.md
+```
