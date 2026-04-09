@@ -5,6 +5,9 @@ CREATE TABLE "bookings" (
 	"date" timestamp NOT NULL,
 	"time_slot" varchar(10) NOT NULL,
 	"status" varchar(20) DEFAULT 'pending',
+	"payment_status" varchar(20) DEFAULT 'unpaid',
+	"stripe_session_id" text,
+	"expires_at" timestamp,
 	"cancellation_reason" text
 );
 --> statement-breakpoint
@@ -19,7 +22,8 @@ CREATE TABLE "onboarding_data" (
 	"experience_level" text NOT NULL,
 	"health_conditions" text NOT NULL,
 	"workout_type" text NOT NULL,
-	"diet_preference" text NOT NULL
+	"diet_preference" text NOT NULL,
+	CONSTRAINT "onboarding_data_user_id_unique" UNIQUE("user_id")
 );
 --> statement-breakpoint
 CREATE TABLE "reviews" (

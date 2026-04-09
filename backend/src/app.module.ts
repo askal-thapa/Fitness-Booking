@@ -24,7 +24,7 @@ class DbModule {}
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../.env' }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     PassportModule,
     JwtModule.register({
       global: true,
